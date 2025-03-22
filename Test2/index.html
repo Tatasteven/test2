@@ -1,0 +1,289 @@
+
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Leads</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+    <!-- Fereastra de Autentificare -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Autentificare</h2>
+            <form id="loginForm">
+                <label for="username">Utilizator:</label>
+                <input type="text" id="username" required>
+                <label for="password">Parolă:</label>
+                <input type="password" id="password" required>
+                <button type="submit">Autentificare</button>
+            </form>
+            <p>Nu ai cont? <a href="#" onclick="openRegisterModal()">Înregistrează-te</a></p>
+            <button id="google-auth-button" class="google-auth-button">Autentifică-te cu Google</button>
+        </div>
+    </div>
+
+    <!-- Fereastra de Înregistrare -->
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Înregistrare</h2>
+            <form id="registerForm">
+                <label for="newUsername">Utilizator:</label>
+                <input type="text" id="newUsername" required>
+                <label for="newPassword">Parolă:</label>
+                <input type="password" id="newPassword" required>
+                <button type="submit">Înregistrează-te</button>
+            </form>
+            <p>Ai deja cont? <a href="#" onclick="openLoginModal()">Autentifică-te</a></p>
+        </div>
+    </div>
+
+    <!-- Containerul Principal (Vizibil după Autentificare) -->
+    <div class="container hidden">
+        <!-- Tab-uri -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="home">Acasă</button>
+            <button class="tab-button" data-tab="leads">Lead-uri</button>
+            <button class="tab-button" data-tab="reports">Rapoarte/Statistici</button>
+            <button class="tab-button" data-tab="team">Echipă</button>
+            <button class="tab-button" data-tab="settings">Setări</button>
+        </div>
+
+        <!-- Conținut Tab-uri -->
+        <div id="home" class="tab-content active">
+            <h2>Acasă</h2>
+            <div class="home-container">
+                <!-- Selector de Dată -->
+                <div class="date-selector">
+                    <label for="activityDate">Alege Data:</label>
+                    <input type="date" id="activityDate" onchange="updateHomeTab()">
+                </div>
+
+                <!-- Activități de Astăzi -->
+                <div class="today-activities">
+                    <h3>Activități</h3>
+                    <ul id="todayActivities"></ul>
+                </div>
+
+                <!-- Calendar -->
+                <div class="calendar">
+                    <h3>Calendar Remindere</h3>
+                    <div id="calendarView"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab-ul Lead-uri -->
+        <div id="leads" class="tab-content">
+            <h2>Lead-uri</h2>
+            <div class="filters">
+                <input type="text" id="search" placeholder="Caută lead-uri..." oninput="filterLeads()">
+                <select id="filterStatus" onchange="filterLeads()">
+                    <option value="">Toate Statusurile</option>
+                    <option value="Nou">Nou</option>
+                    <option value="Contactat">Contactat</option>
+                    <option value="Negociere">Negociere</option>
+                    <option value="Pierdut">Pierdut</option>
+                </select>
+                <select id="filterInteres" onchange="filterLeads()">
+                    <option value="">Toate Interesele</option>
+                    <option value="1 Camera">1 Camera</option>
+                    <option value="2 Camere">2 Camere</option>
+                    <option value="3 Camere">3 Camere</option>
+                    <option value="4 Camere">4 Camere</option>
+                    <option value="Multiple">Multiple</option>
+                    <option value="Spatii Comerciale">Spații Comerciale</option>
+                </select>
+                <button onclick="sortLeads('nume')">Sortează după Nume</button>
+                <button onclick="sortLeads('data')">Sortează după Dată</button>
+            </div>
+            <table id="clientTable">
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Nume</th>
+                        <th>Prenume</th>
+                        <th>Telefon</th>
+                        <th>Email</th>
+                        <th>Interes</th>
+                        <th>Data Adăugării</th>
+                        <th>Acțiuni</th>
+                        <th>Interacțiuni</th>
+                        <th>Remindere</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rândurile vor fi adăugate dinamic -->
+                </tbody>
+            </table>
+            <button class="add-lead-button" onclick="openAddLeadModal()">+ Adaugă Lead</button>
+        </div>
+
+        <!-- Tab-ul Rapoarte/Statistici -->
+        <div id="reports" class="tab-content">
+            <h2>Rapoarte și Statistici</h2>
+            <div id="reportStats"></div>
+        </div>
+
+        <!-- Tab-ul Echipă -->
+        <div id="team" class="tab-content">
+            <h2>Echipă</h2>
+            <div id="teamMembers"></div>
+        </div>
+
+        <!-- Tab-ul Setări -->
+        <div id="settings" class="tab-content">
+            <h2>Setări</h2>
+            <div class="settings-options">
+                <label for="theme">Temă:</label>
+                <select id="theme" onchange="changeTheme()">
+                    <option value="light">Light Mode</option>
+                    <option value="dark">Dark Mode</option>
+                </select>
+                <label for="notifications">Notificări:</label>
+                <select id="notifications" onchange="toggleNotifications()">
+                    <option value="on">Pornite</option>
+                    <option value="off">Oprite</option>
+                </select>
+                <button onclick="exportData()">Exportă Date</button>
+                <button onclick="logout()">Delogare</button> <!-- Buton de delogare -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Ferestre Modale -->
+    <div id="addLeadModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Adaugă Lead</h2>
+            <form id="addLeadForm">
+                <label for="nume">Nume:</label>
+                <input type="text" id="nume" placeholder="Nume" required>
+                <label for="prenume">Prenume:</label>
+                <input type="text" id="prenume" placeholder="Prenume" required>
+                <label for="telefon">Telefon:</label>
+                <input type="tel" id="telefon" placeholder="Număr de Telefon">
+                <label for="email">Email:</label>
+                <input type="email" id="email" placeholder="Email">
+                <label for="interes">Interes:</label>
+                <select id="interes" required>
+                    <option value="">Alege Interesul</option>
+                    <option value="1 Camera">1 Camera</option>
+                    <option value="2 Camere">2 Camere</option>
+                    <option value="3 Camere">3 Camere</option>
+                    <option value="4 Camere">4 Camere</option>
+                    <option value="Multiple">Multiple</option>
+                    <option value="Spatii Comerciale">Spații Comerciale</option>
+                </select>
+                <label for="detalii">Detalii Suplimentare:</label>
+                <textarea id="detalii" placeholder="Detalii Suplimentare"></textarea>
+                <label for="sursaLead">Sursa Lead:</label>
+                <select id="sursaLead" required>
+                    <option value="">Alege sursa lead</option>
+                    <option value="Site">Site</option>
+                    <option value="Recomandare">Recomandare</option>
+                    <option value="Email">Email</option>
+                    <option value="Birou Vânzări">Birou Vânzări</option>
+                </select>
+                <label for="campanie">Campanie:</label>
+                <input type="text" id="campanie" placeholder="Campanie (opțional)">
+                <button type="submit">Salvează</button>
+                <button type="button" onclick="closeAddLeadModal()">Închide</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editLeadModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Editează Lead</h2>
+            <form id="editLeadForm">
+                <label for="editNume">Nume:</label>
+                <input type="text" id="editNume" placeholder="Nume" required>
+                <label for="editPrenume">Prenume:</label>
+                <input type="text" id="editPrenume" placeholder="Prenume" required>
+                <label for="editTelefon">Telefon:</label>
+                <input type="tel" id="editTelefon" placeholder="Număr de Telefon">
+                <label for="editEmail">Email:</label>
+                <input type="email" id="editEmail" placeholder="Email">
+                <label for="editInteres">Interes:</label>
+                <select id="editInteres" required>
+                    <option value="">Alege Interesul</option>
+                    <option value="1 Camera">1 Camera</option>
+                    <option value="2 Camere">2 Camere</option>
+                    <option value="3 Camere">3 Camere</option>
+                    <option value="4 Camere">4 Camere</option>
+                    <option value="Multiple">Multiple</option>
+                    <option value="Spatii Comerciale">Spații Comerciale</option>
+                </select>
+                <button type="submit">Salvează</button>
+                <button type="button" onclick="closeEditLeadModal()">Închide</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="actionModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Acțiuni</h2>
+            <select id="actionType" onchange="showActionFields()">
+                <option value="">Alege o acțiune</option>
+                <option value="apel">Apel</option>
+                <option value="email">Email</option>
+                <option value="intalnire">Întâlnire</option>
+                <option value="negociere">Negociere</option>
+                <option value="pierdut">Pierdut</option>
+            </select>
+            <div id="actionFields"></div>
+            <button onclick="saveAction()">Salvează</button>
+            <button onclick="closeActionModal()">Închide</button>
+        </div>
+    </div>
+
+    <div id="reminderModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Programează Reminder</h2>
+            <select id="reminderActionType">
+                <option value="">Alege o acțiune</option>
+                <option value="apel">Apel</option>
+                <option value="email">Email</option>
+                <option value="intalnire">Întâlnire</option>
+                <option value="negociere">Negociere</option>
+            </select>
+            <label for="reminderDateTime">Data și Ora:</label>
+            <input type="datetime-local" id="reminderDateTime">
+            <button onclick="saveReminder()">Salvează</button>
+            <button onclick="closeReminderModal()">Închide</button>
+        </div>
+    </div>
+
+    <div id="interactionModal" class="modal hidden">
+        <div class="modal-content wide-modal">
+            <h2>Interacțiuni pentru <span id="interactionClientName"></span></h2>
+            <div class="interaction-filters">
+                <select id="filterInteractionType" onchange="filterInteractions()">
+                    <option value="">Toate Tipurile</option>
+                    <option value="apel">Apel</option>
+                    <option value="email">Email</option>
+                    <option value="intalnire">Întâlnire</option>
+                    <option value="negociere">Negociere</option>
+                    <option value="pierdut">Pierdut</option>
+                </select>
+                <button onclick="sortInteractions('data')">Sortează după Dată</button>
+            </div>
+            <table class="interaction-table">
+                <thead>
+                    <tr>
+                        <th>Tip</th>
+                        <th>Dată</th>
+                        <th>Detalii</th>
+                    </tr>
+                </thead>
+                <tbody id="interactionList"></tbody>
+            </table>
+            <button onclick="closeInteractionModal()">Închide</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

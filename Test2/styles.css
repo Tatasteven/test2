@@ -1,0 +1,245 @@
+/* Resetare stiluri implicite */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Stiluri pentru ferestre modale */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.wide-modal {
+    width: 80%;
+    max-width: 800px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Container principal */
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab-uri */
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.tab-button.active {
+    background: #0056b3;
+}
+
+.tab-button:hover {
+    opacity: 0.9;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Pagina de Acasă */
+.home-container {
+    display: flex;
+    gap: 20px;
+}
+
+.today-activities, .calendar {
+    flex: 1;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.today-activities ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.today-activities li {
+    background: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.calendar {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.calendar-event {
+    background: #e3f2fd;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #90caf9;
+}
+
+/* Tabel de Lead-uri */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Butoane */
+button {
+    cursor: pointer;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.add-lead-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #007bff;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.google-auth-button {
+    background-color: #4285F4;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Input-uri și Select-uri */
+input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: vertical;
+    height: 80px;
+}
+
+/* Dark Mode */
+body.dark-theme {
+    background-color: #333;
+    color: #f4f4f9;
+}
+
+body.dark-theme .container {
+    background-color: #444;
+    color: #f4f4f9;
+}
+
+body.dark-theme table {
+    background-color: #555;
+    color: #f4f4f9;
+}
+
+body.dark-theme th {
+    background-color: #007bff;
+    color: white;
+}
+
+body.dark-theme tr:nth-child(even) {
+    background-color: #666;
+}
+
+body.dark-theme tr:hover {
+    background-color: #777;
+}
+
+body.dark-theme .modal-content {
+    background-color: #444;
+    color: #f4f4f9;
+}
+
+body.dark-theme input, body.dark-theme textarea, body.dark-theme select {
+    background-color: #555;
+    color: #f4f4f9;
+    border: 1px solid #777;
+}
+
+body.dark-theme button {
+    background-color: #007bff;
+    color: white;
+}
